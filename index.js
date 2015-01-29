@@ -1,20 +1,24 @@
 
 var AWS = require('aws-sdk');
 var uuid = require('uuid');
+var _ = require('lodash');
 var assert = require('assert');
+var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
 
-module.exports = function (logStreamName, logGroupName, awsParams) {
-  assert(logStreamName, 'Parameter logStreamName is required.');
+module.exports = function (logGroupName, logStreamName, awsParams) {
   assert(logGroupName, 'Parameter logGroupName is required.');
+  assert(logStreamName, 'Parameter logStreamName is required.');
   awsParams = awsParams || {};
   
-  var cloudwatchlogs = new AWS.ClodWatchLogs(awsParams);
+  var cloudwatchlogs = new AWS.CloudWatchLogs(awsParams);
   
   var ee = new EventEmitter();
-  ee.log = function _log(obj) {
-    obj.uuid = uuid.v4();
+  ee.log = function _log() {
+    var _id = uuid.v4();
+    var message = _squash(arguments);
+    message.push(_id);
     
     cloudwatchlogs.describeLogStreams({
       logGroupName: logGroupName
@@ -34,7 +38,7 @@ module.exports = function (logStreamName, logGroupName, awsParams) {
         logGroupName: logGroupName,
         sequenceToken: sequenceToken,
         logEvents: [{
-          message: JSON.stringify(obj),
+          message: JSON.stringify(message),
           timestamp: Date.now()
         }]
       }, function (err) {
@@ -45,10 +49,21 @@ module.exports = function (logStreamName, logGroupName, awsParams) {
       });
     });
     
-    return obj.uuid;
+    return _id;
   };
  
   return ee; 
 };
 
     
+function _squash() {
+  var x = _.map(arguments, function (val) {
+    if (typeof val === 'string' || typeof val === 'number') {
+      return val;
+    } else {
+      return util.inspect(val, { depth: 10 });
+    }
+  });
+  return x;
+}
+

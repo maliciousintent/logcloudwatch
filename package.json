@@ -23,6 +23,7 @@
   "homepage": "https://github.com/plasticpanda/logcloudwatch",
   "dependencies": {
     "aws-sdk": "^2.1.8",
+    "lodash": "^3.0.0",
     "uuid": "^2.0.1"
   }
 }
