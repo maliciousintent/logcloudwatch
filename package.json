@@ -1,0 +1,28 @@
+{
+  "name": "logcloudwatch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:plasticpanda/logcloudwatch.git"
+  },
+  "keywords": [
+    "clodwatch",
+    "log",
+    "nodejs"
+  ],
+  "author": "Simone Lusenti <simone@plasticpanda.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plasticpanda/logcloudwatch/issues"
+  },
+  "homepage": "https://github.com/plasticpanda/logcloudwatch",
+  "dependencies": {
+    "aws-sdk": "^2.1.8",
+    "uuid": "^2.0.1"
+  }
+}
