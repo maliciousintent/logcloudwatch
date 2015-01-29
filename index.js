@@ -17,7 +17,7 @@ module.exports = function (logGroupName, logStreamName, awsParams) {
   var ee = new EventEmitter();
   ee.log = function _log() {
     var _id = uuid.v4();
-    var message = _squash(arguments);
+    var message = _squash.apply(this, arguments);
     message.push(_id);
     
     cloudwatchlogs.describeLogStreams({
