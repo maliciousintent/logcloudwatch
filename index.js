@@ -18,7 +18,6 @@ module.exports = function (logGroupName, logStreamName, awsParams) {
   ee.log = function _log() {
     var _id = uuid.v4();
     var message = _squash.apply(this, arguments);
-    message.push(_id);
     
     cloudwatchlogs.describeLogStreams({
       logGroupName: logGroupName
@@ -38,7 +37,7 @@ module.exports = function (logGroupName, logStreamName, awsParams) {
         logGroupName: logGroupName,
         sequenceToken: sequenceToken,
         logEvents: [{
-          message: JSON.stringify(message),
+          message: JSON.stringify({ message: message, uuid: _id }),
           timestamp: Date.now()
         }]
       }, function (err) {
@@ -57,13 +56,7 @@ module.exports = function (logGroupName, logStreamName, awsParams) {
 
     
 function _squash() {
-  var x = _.map(arguments, function (val) {
-    if (typeof val === 'string' || typeof val === 'number') {
-      return val;
-    } else {
-      return util.inspect(val, { depth: 10 });
-    }
-  });
+  var x = _.map(arguments, _.identity);
   return x;
 }
 
